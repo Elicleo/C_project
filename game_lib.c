@@ -9,7 +9,7 @@
     #include <unistd.h>
 #endif
 
-// 1. Инициализация (используем указатель на структуру и malloc)
+// Инициализация (используем указатель на структуру и malloc)
 void initPlayer(Player *p, const char *targetName) {
     p->heart = 2;
     p->remembers_name = "####";
@@ -41,16 +41,13 @@ void enableColors() {
 }
 #endif
 
-// 2. Очистка (обязательно для динамической памяти)
+// Очистка (обязательно для динамической памяти)
 void freePlayer(Player *p) {
-    if (p->name != NULL) {
-        free(p->name); // Освобождаем память из-под имени
-        p->name = NULL;
-        free(p->knows_system);
-    }
+    if (p->name != NULL) { free(p->name); p->name = NULL; }
+    if (p->knows_system != NULL) { free(p->knows_system); p->knows_system = NULL; }
 }
 
-// 3. Динамическое чтение файла
+// Динамическое чтение файла
 char* readArtFromFile(const char *filename) {
     FILE *f = fopen(filename, "rb");
     if (!f) return NULL;
@@ -69,7 +66,7 @@ char* readArtFromFile(const char *filename) {
     return string; // Возвращаем указатель наружу
 }
 
-// 4. Плавный вывод текста
+// Плавный вывод текста
 void printTypewriter(const char *text) {
     for (int i = 0; text[i] != '\0'; i++) {
         printf("%c", text[i]);
@@ -82,7 +79,7 @@ void printTypewriter(const char *text) {
     }
 }
 
-// 5. Валидация ввода
+// Валидация ввода
 int getValidatedInput(int min, int max) {
     int val;
     printf("\x1b[36mВыберите (%d-%d): \x1b[0m", min, max);

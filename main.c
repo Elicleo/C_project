@@ -16,12 +16,13 @@
 #define COLOR_BOLD    "\x1b[1m"
 
 // Прототипы сцен
+void renderFrame(const char *artFile, const char *artColor, Player *p);
+void one_question(Player *p);
 void scene_School(Player *p);
 void scene_Lunch(Player *p);
 void scene_Park(Player *p);
 void scene_End(Player *p);
 void final(Player *p, int answer);
-void renderFrame(const char *artFile, const char *artColor, Player *p);
 
 void renderFrame(const char *artFile, const char *artColor, Player *p) {
     // #ifdef _WIN32
@@ -146,8 +147,7 @@ void scene_Lunch(Player *p) {
     
     snprintf(buffer, sizeof(buffer), "%s: Здорово сработано! А у меня для тебя латте!", p->remembers_name);
     printTypewriter(buffer); getchar();
-    snprintf(buffer, sizeof(buffer), "*Я беру из рук %s почти обжигающий стаканчик и вдыхаю горьковатый аромат.*", p->remembers_name);
-    printTypewriter(buffer); getchar();
+    printf("*Я беру из рук %s почти обжигающий стаканчик и вдыхаю горьковатый аромат.*", p->remembers_name); getchar();
     snprintf(buffer, sizeof(buffer), "%s: Спасибо. Ты, смотрю, совсем себе не изменяешь. Снова ...", p->name);
     printTypewriter(buffer);
     printf("\n1. Апельсиновый фреш?\n2. Какао с маршмэллоу?\n3. Айс латтэ?\n4. Чёрный чай?\n");
@@ -201,9 +201,8 @@ void scene_Park(Player *p) {
     char buffer[256];
 
     printf("*Ты осознаёшь, что идёшь по давно привычной каменной дорожке. В этот раз даже не опаздываешь.*"); getchar();
-    snprintf(buffer, sizeof(buffer), "*Вот и %s. Она уже сидит на парковой скамейке.*", p->remembers_name);
-    printTypewriter(buffer); getchar();
-    printTypewriter("*Ты без удивления замечаешь в её руках ...*");
+    printf("*Вот и %s. Она уже сидит на парковой скамейке.*", p->remembers_name); getchar();
+    printf("*Ты без удивления замечаешь в её руках ...*");
     printf("\n1. книгу\n2. музыкальный плеер с наушниками\n3. кубик рубика\n4. скетчбук и карандаш\n");
     int answer = getValidatedInput(1, 4);
     if (answer != 1) {
@@ -289,7 +288,7 @@ void scene_End(Player *p) {
         printTypewriter(buffer); getchar();
         snprintf(buffer, sizeof(buffer), "%s: Этот странный голос в голове... Видимо, всё ещё отголоски кошмара. Я ведь не схожу с ума, в самом деле? Хах.", p->name);
         printTypewriter(buffer); getchar();
-    } else if (p->heart < 2 || p->remembers_name != "Cleo") {
+    } else if (p->heart < 5) {
         printf("*Ты открываешь глаза и понимаешь, что находишься в своей кровати. Яркое субботнее солнце уже начинает пробиваться сквозь задёрнутые шторы.*"); getchar();
         printf("*Даже после длительного сна всё ещё чувствуется усталось и лёгкий озноб.*"); getchar();
         snprintf(buffer, sizeof(buffer), "%s: Надеюсь, я не заболеваю... Надо скорее принять таблетки, пока не стало хуже.", p->name);
@@ -315,7 +314,7 @@ void scene_End(Player *p) {
         printTypewriter(buffer); getchar();
         printTypewriter("+79#??&#*?$*: Всё-таки много воды утекло... В любом, случае, я снова в городе. Не хочешь встретиться? Например, завтра?.."); getchar();
         printTypewriter("+79#??&#*?$*: Если неудобно, ничего страшного, можно в другой день! Я задержусь здесь на какое-то время. Так что... Жду твоего ответа."); getchar();
-        printf("*Незнакомый номер. %s.*", (p->remembers_name == "Cleo") ? "Но знакомое имя" : "Незнакомое имя"); getchar();
+        printf("*Незнакомый номер. %s.*", (strcmp(p->remembers_name, "Cleo") == 0) ? "Но знакомое имя" : "Незнакомое имя"); getchar();
         printf("*Ты задумываешься на пару секунд и после уверенно набираешь сообщение...*\n");
         if (p->remembers_name != "Cleo") {
             printf("\n1. ?\n2. ?\n3. ?\n");
@@ -379,7 +378,7 @@ int main() {
     printf("\n(Здесь и далее нажимайте Enter, чтобы продолжить)"); getchar();
     printTypewriter("???: Привет. Как тебя зовут? Назови себя: ");
     fgets(tempName, 50, stdin);
-    tempName[strcspn(tempName, "\n")] = 0; // Удаляем символ переноса строки
+    tempName[strcspn(tempName, "\n")] = 0;
 
     Player hero;
     initPlayer(&hero, tempName); // Здесь выделяется динамическая память под имя
@@ -388,16 +387,11 @@ int main() {
     snprintf(buffer, sizeof(buffer), "???: Правда %s? Хах, какое странное имя. Ну ладно, %s, здесь будет весело.", hero.name, hero.name);
     printTypewriter(buffer); getchar();
     one_question(&hero);
-    // scene_Lunch(&hero);
     getchar();
-
-    // if (hero.heart <= 0) {
-    //     scene_End(&hero);
-    // }
 
     snprintf(buffer, sizeof(buffer), "%s: Мемориальное подземелье закрыто.", hero.knows_system);
     printTypewriter(buffer); getchar();
-    if (hero.knows_system == "Система") {
+    if (strcmp(hero.knows_system, "Система") == 0) {
         snprintf(buffer, sizeof(buffer), "%s: Система... Что же это было такое?", hero.name);
         printTypewriter(buffer); getchar();
     }
